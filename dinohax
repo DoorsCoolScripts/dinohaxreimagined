@@ -1,0 +1,1441 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "DinoHax",
+   Icon = 13034797311, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   LoadingTitle = "DinoHax Reimagined",
+   LoadingSubtitle = "Universal",
+   Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "dinohax", -- Create a custom folder for your hub/game
+      FileName = "config321"
+   },
+
+   Discord = {
+      Enabled = true, -- Prompt the user to join your Discord server if their executor supports it
+      Invite = "GpNEdMvQrG", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+
+   KeySystem = true, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "DinoHax Key System",
+      Subtitle = "Key System",
+      Note = "dsc.gg/dinohax", -- Use this to tell the user how to get a key
+      FileName = "keyfordino33", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"free", "testkey", "trevorsucks", "beta", "temp-hwid-220180258256902"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+
+_G.car = nil
+_G.type = nil
+
+function loed()
+if _G.car == "La Matador" or "Boxer" or "Camaro" or "Deja" or "Model3" then do
+_G.type = "Chassis"
+end
+if _G.car == "Volt" then do
+_G.type = "Custom"
+end
+end
+end
+end
+
+local Tab = Window:CreateTab("Jailbreak", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("CUSTOM SCRIPTS")
+
+local Divider = Tab:CreateDivider()
+
+local Dropdown = Tab:CreateDropdown({
+   Name = "SELECT DESIRED CAR FOR KEYBIND",
+   Options = {"La Matador","Boxer","Camaro","Deja","Model3","Volt"},
+   CurrentOption = {"Camaro"},
+   MultipleOptions = false,
+   Flag = "Dropdown1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Options)
+   _G.car = Options[1]
+   loed()
+    end,
+})
+
+local Keybind = Tab:CreateKeybind({
+   Name = "SPAWN CAR WITH CUSTOMIZATION",
+   CurrentKeybind = "Q",
+   HoldToInteract = false,
+   Flag = "Keybind1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Keybind)
+   		 local args = {[1] = ""..tostring(_G.type), [2] = ""..tostring(_G.car)} game:GetService("ReplicatedStorage"):WaitForChild("GarageSpawnVehicle"):FireServer(unpack(args)) wait(1) 			game:GetService("ReplicatedStorage"):WaitForChild("GarageLoadLastSelection"):FireServer()
+   end,
+})
+
+local Keybind = Tab:CreateKeybind({
+   Name = "LOAD CUSTIMIZATIONS",
+   CurrentKeybind = "Q",
+   HoldToInteract = false,
+   Flag = "Keybind2", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Keybind)
+			game:GetService("ReplicatedStorage"):WaitForChild("GarageLoadLastSelection"):FireServer()
+   end,
+})
+
+local Button = Tab:CreateButton({
+		Name = "SILENT AIM + WALLBANG",
+		Callback = function()
+	getgenv().toggled = true --/ true & f1alse
+	
+	getgenv().old = getgenv().old or require(game:GetService("ReplicatedStorage").Module.RayCast).RayIgnoreNonCollideWithIgnoreList
+	
+	if getgenv().toggled then
+		require(game:GetService("ReplicatedStorage").Module.RayCast).RayIgnoreNonCollideWithIgnoreList = function(...)
+			local nearestDistance, nearestEnemy = 1000, nil
+			for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+				if v.Team ~= game:GetService("Players").LocalPlayer.Team and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+					if (v.Character.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude < nearestDistance then
+						nearestDistance, nearestEnemy = (v.Character.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude, v
+					end
+				end
+			end
+			local arg = {old(...)}
+			if (tostring(getfenv(2).script) == "BulletEmitter" or tostring(getfenv(2).script) == "Taser") and nearestEnemy then
+				arg[1] = nearestEnemy.Character.HumanoidRootPart
+				arg[2] = nearestEnemy.Character.HumanoidRootPart.Position
+			end
+			return unpack(arg)
+		end
+	else
+		require(game:GetService("ReplicatedStorage").Module.RayCast).RayIgnoreNonCollideWithIgnoreList = getgenv().old
+	end
+			  end    
+	})
+
+local Button = Tab:CreateButton({
+		Name = "SILENT AIM + WALLBANG (OFF)",
+		Callback = function()
+	getgenv().toggled = false --/ true & f1alse
+	
+	getgenv().old = getgenv().old or require(game:GetService("ReplicatedStorage").Module.RayCast).RayIgnoreNonCollideWithIgnoreList
+	
+	if getgenv().toggled then
+		require(game:GetService("ReplicatedStorage").Module.RayCast).RayIgnoreNonCollideWithIgnoreList = function(...)
+			local nearestDistance, nearestEnemy = 1000, nil
+			for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+				if v.Team ~= game:GetService("Players").LocalPlayer.Team and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+					if (v.Character.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude < nearestDistance then
+						nearestDistance, nearestEnemy = (v.Character.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude, v
+					end
+				end
+			end
+			local arg = {old(...)}
+			if (tostring(getfenv(2).script) == "BulletEmitter" or tostring(getfenv(2).script) == "Taser") and nearestEnemy then
+				arg[1] = nearestEnemy.Character.HumanoidRootPart
+				arg[2] = nearestEnemy.Character.HumanoidRootPart.Position
+			end
+			return unpack(arg)
+		end
+	else
+		require(game:GetService("ReplicatedStorage").Module.RayCast).RayIgnoreNonCollideWithIgnoreList = getgenv().old
+	end
+			  end    
+	}) 
+_G.promote = true
+
+function promotion()
+while _G.promote == true do
+game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("DINOHAX ON TOP😎")
+wait(4)
+game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("#1 SCRIPT HUB😎: DINOHAX")
+wait(4)
+game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("GET DINOHAX TODAY😎🫵")
+wait(4)
+game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("BEST KEYLESS HUB = DINOHAX🤑😎")
+wait(5)
+end
+end
+
+
+   local Toggle = Tab:CreateToggle({
+   Name = "PROMOTE DINOHAX",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+  _G.promote = Value
+  promotion()
+   end,
+})
+
+   local Section = Tab:CreateSection("HUBS")
+local Divider = Tab:CreateDivider()
+	local Button = Tab:CreateButton({
+   Name = "INFINITE YIELD",
+   Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "SENSATION OP (KEYLESS)",
+   Callback = function()
+loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/730854e5b6499ee91deb1080e8e12ae3.lua"))()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "SOLIXHUB OP (24HR KEY)",
+   Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/debunked69/Solixreworkkeysystem/refs/heads/main/solix%20new%20keyui.lua"))() 
+   end,
+})
+local Section = Tab:CreateSection("AUTOFARMING (gg/projectauto & gg/universalfarm)")
+local Divider = Tab:CreateDivider()
+local Button = Tab:CreateButton({
+   Name = "UNIVERSALS AUTOFARM (OP)",
+   Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/BlitzIsKing/UniversalFarm/main/Loader/Regular"))()   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "AUTO ARREST V3 (BEST)",
+   Callback = function()
+   loadstring(game:HttpGet('http://scripts.projectauto.xyz/AutoArrestV3'))() 
+    end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "AUTO ROB V6 (BUGGY)",
+   Callback = function()
+loadstring(game:HttpGet('http://scripts.projectauto.xyz/AutoRobV6'))()
+end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "AUTO ROB V4 (STABLE)",
+   Callback = function()
+loadstring(game:HttpGet('http://scripts.projectauto.xyz/AutoRobV4'))()
+end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "AUTO ROB V5 (BEST)",
+   Callback = function()
+loadstring(game:HttpGet('http://scripts.projectauto.xyz/AutoRobV5'))()
+end,
+})
+local Label = Tab:CreateLabel("dsc.gg/dinohax", 13034797311, Color3.fromRGB(255, 255, 255), true) -- Title, Icon, Color, IgnoreTheme
+
+
+
+local Tab = Window:CreateTab("Glass Bridge", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("CUSTOM SCRIPTS")
+local Divider = Tab:CreateDivider()
+
+local Button = Tab:CreateButton({
+   Name = "KILL ALL",
+   Callback = function()
+
+local args = {
+    [1] = game:GetService("Players").LocalPlayer
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("DailyRewardsRemotes"):WaitForChild("red"):FireServer(unpack(args))
+
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "INF YIELD",
+   Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+   end,
+})
+_G.killall = true
+
+function autokill()
+  while _G.killall == true do
+local args = {
+    [1] = game:GetService("Players").LocalPlayer
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("DailyRewardsRemotes"):WaitForChild("red"):FireServer(unpack(args))
+wait(0.00000000000000000001)
+end
+end
+
+local Toggle = Tab:CreateToggle({
+   Name = "AUTO KILL ALL",
+   CurrentValue = false,
+   Flag = "Toggle2", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+  _G.killall = Value
+  autokill()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "SHOW CORRECT PATH FOR ALL",
+   Callback = function()
+local args = {
+    [1] = game:GetService("Players").LocalPlayer
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("DailyRewardsRemotes"):WaitForChild("green"):FireServer(unpack(args))
+
+   end,
+})
+
+_G.looppath = true
+
+function looper()
+while _G.looppath == true do 
+local args = {
+    [1] = game:GetService("Players").LocalPlayer
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("DailyRewardsRemotes"):WaitForChild("green"):FireServer(unpack(args))
+wait(0.00000000000000000000000000000000000000000000001)
+end
+end
+
+
+local Toggle = Tab:CreateToggle({
+   Name = "LOOP SHOW CORRECT PATH",
+   CurrentValue = false,
+   Flag = "Toggle4", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+  _G.looppath = Value
+  looper()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "GIVE FRONTMAN",
+   Callback = function()
+local args = {
+    [1] = game:GetService("Players").LocalPlayer
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("DailyRewardsRemotes"):WaitForChild("VerifyFront"):FireServer(unpack(args))
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "GIVE CARPET",
+   Callback = function()
+
+ local args = {
+    [1] = game:GetService("Players").LocalPlayer
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("SpinEvents"):WaitForChild("SextoPremio"):FireServer(unpack(args))
+
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "GIVE 100,000 CASH",
+   Callback = function()
+
+local args = {
+    [1] = game:GetService("Players").LocalPlayer
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("SpinEvents"):WaitForChild("QuintoPremio"):FireServer(unpack(args))
+
+
+   end,
+})
+
+
+_G.cashfarm = true
+
+function autocash()
+while _G.cashfarm == true do
+local args = {
+    [1] = game:GetService("Players").LocalPlayer
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("SpinEvents"):WaitForChild("QuintoPremio"):FireServer(unpack(args))
+wait(0.0000000000000000000000000000000000000000000000000000000000000000000001)
+     end
+end
+
+local Toggle = Tab:CreateToggle({
+   Name = "AUTOFARM CASH",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+  _G.cashfarm = Value
+  autocash()
+   end,
+})
+
+_G.lagserver = true
+
+function laggyboi()
+while _G.lagserver == true do
+local args = {
+    [1] = game:GetService("Players").LocalPlayer
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("HeliEvents"):WaitForChild("remote1"):FireServer(unpack(args))
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local LocalCharacter = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local LocalHumanoid = LocalCharacter:WaitForChild("Humanoid")
+
+task.delay(0.000000000000000000000000001, function()
+    LocalHumanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+end)
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-83.2672958, 4.57895613, 0.165222868, -1.19065831e-07, -5.84630033e-09, -1, -0.0490423292, 0.998796701, 0, 0.998796701, 0.0490423292, -1.19209275e-07)
+wait(0.0000000000000001)
+end
+end
+
+local Toggle = Tab:CreateToggle({
+   Name = "LAG SERVER (NEED HELI)",
+   CurrentValue = false,
+   Flag = "Toggle3", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+  _G.lagserver = Value
+  laggyboi()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "ALL TILES RIGHT",
+   Callback = function()
+local part = Instance.new("Part", workspace)
+part.Transparency = 10
+part.Anchored = true
+part.CFrame = CFrame.new(227.594727, 0.4, 10.2763443, 0.102445796, -9.66328662e-06, -0.994738519, 1.25611098e-06, 1, -9.58528835e-06, 0.994738638, -2.67507858e-07, 0.102445796)
+part.Size = Vector3.new(2048, 2, 2048)
+part.Name = "sigmasigmasigma"
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "DISABLE ALL TILES RIGHT",
+   Callback = function()
+game.Workspace.sigmasigmasigma:Destroy()
+   end,
+})
+
+local Button = Tab:CreateButton({
+   Name = "GIVE RANDOM GEAR",
+   Callback = function()
+local args = {
+    [1] = game:GetService("Players").LocalPlayer
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("FreeGearEvent"):FireServer(unpack(args))
+
+   end,
+})
+
+local Label = Tab:CreateLabel("dsc.gg/dinohax", 13034797311, Color3.fromRGB(255, 255, 255), true) -- Title, Icon, Color, IgnoreTheme
+local Tab = Window:CreateTab("Legends of Speed", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("CUSTOM SCRIPTS")
+
+local Divider = Tab:CreateDivider()
+
+local Button = Tab:CreateButton({
+   Name = "DinoHax Reborn",
+   Callback = function()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "DinoHax", HidePremium = false, SaveConfig = true, ConfigFolder = "DinoHax Reborn", IntroText = "DinoHax", IntroIcon = "rbxassetid://13034797311"})
+
+
+ -- Variáveis
+ getgenv().AutoOrb = true
+ getgenv().AutoRebirth = true
+ getgenv().AutoGem = true
+ getgenv().AutoEgg = true
+ getgenv().Egg = "Yellow Crystal"
+ getgenv().BugPet = true
+ getgenv().AutoHoop = true
+ local Player = game:GetService("Players").LocalPlayer
+
+ -- Funções
+ function AutoOrb()
+	 while getgenv().AutoOrb == true do
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Red Orb", "City")
+		 wait()
+	 end
+ end
+
+ function AutoGem()
+	 while getgenv().AutoGem == true do
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Gem", "City")
+		 wait()
+	 end
+ end    
+
+ function AutoRebirth()
+	 while getgenv().AutoRebirth == true do
+		 game:GetService("ReplicatedStorage").rEvents.rebirthEvent:FireServer("rebirthRequest")
+		 wait()
+	 end
+ end
+ 
+ function BugPet()
+	 while getgenv().BugPet == true do
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer("collectOrb", "Yellow Orb", "City")
+		 game:GetService("ReplicatedStorage").rEvents.rebirthEvent:FireServer("rebirthRequest")
+		 wait(0.1)
+	 end
+ end
+
+ -- Body
+ local FarmTab = Window:MakeTab({
+	 Name = "AUTO FARM LOS",
+	 Icon = "rbxassetid://4483345998",
+	 PremiumOnly = false
+ })
+
+ local TeleportTab = Window:MakeTab({
+	 Name = "TELEPORTS LOS",
+	 Icon = "rbxassetid://4483345998",
+	 PremiumOnly = false
+ })
+
+ local EggTab = Window:MakeTab({
+	 Name = "PETS LOS",
+	 Icon = "rbxassetid://4483345998",
+	 PremiumOnly = false
+ })
+
+ local MiscTab = Window:MakeTab({
+	 Name = "MISC LOS",
+	 Icon = "rbxassetid://4483345998",
+	 PremiumOnly = false
+ })
+
+ -- Toggles
+ FarmTab:AddToggle({
+	 Name = "Auto Orb",
+	 Default = false,
+	 Callback = function(Value)
+		 getgenv().AutoOrb = Value
+		 AutoOrb()
+	 end
+ })
+ 
+ FarmTab:AddToggle({
+	 Name = "Auto Hoop",
+	 Default = false,
+	 Callback = function(Value)
+		 getgenv().AutoHoop = Value
+		 spawn(function()
+			 while getgenv().AutoHoop == true do
+				 for i, v in pairs(game:GetService("Workspace").Hoops:GetChildren()) do
+					 firetouchinterest(v, game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, 0)
+					 wait()
+					 firetouchinterest(v, game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, 1)
+				 end
+			 end
+		 end)    
+	 end
+ })
+
+ FarmTab:AddToggle({
+	 Name = "Auto Gem",
+	 Default = false,
+	 Callback = function(Value)
+		 getgenv().AutoGem = Value
+		 AutoGem()
+	 end
+ })
+
+ MiscTab:AddToggle({
+	 Name = "Auto Rebirth",
+	 Default = false,
+	 Callback = function(Value)
+		 getgenv().AutoRebirth = Value
+		 AutoRebirth()
+	 end    
+ })
+ 
+ EggTab:AddToggle({
+ Name = "Auto Egg",
+ Default = false,
+ Callback = function(Value)
+		 function Egg()
+			 while getgenv().AutoEgg == true do
+				 game:GetService("ReplicatedStorage").rEvents.openCrystalRemote:InvokeServer("openCrystal", getgenv().Egg)
+				 wait()
+			 end
+		 end
+		 
+		 getgenv().AutoEgg = Value
+		 Egg()
+	   end
+ })
+ 
+ EggTab:AddToggle({
+	 Name = "Bug Pet",
+	 Default = false,
+	 Callback = function(Value)
+		 getgenv().BugPet = Value
+		 BugPet()
+	 end    
+ })
+
+ -- Buttons
+ TeleportTab:AddButton({
+	 Name = "Highway Legends",
+	 Callback = function()
+		 local plr = game.Players.LocalPlayer
+		 local char = plr.Character
+		 char.HumanoidRootPart.CFrame = CFrame.new(3682.60254, 71.5308151, 5592.50879, -0.0193620101, 3.62180188e-08, -0.999812543, 4.99353519e-08, 1, 3.52577771e-08, 0.999812543, -4.92433294e-08, -0.0193620101)
+	   end    
+ })
+
+ TeleportTab:AddButton({
+	 Name = "Snow City",
+	 Callback = function()
+		 local plr = game.Players.LocalPlayer
+		 local char = plr.Character
+		 char.HumanoidRootPart.CFrame = CFrame.new(-866.386841, 4.00088787, 2165.70654, -0.499959469, -9.93534854e-08, -0.866048813, -4.44803661e-08, 1, -8.90424445e-08, 0.866048813, -5.99544503e-09, -0.499959469)
+	   end    
+ })
+
+ TeleportTab:AddButton({
+	 Name = "Magma City",
+	 Callback = function()
+		 local plr = game.Players.LocalPlayer
+		 local char = plr.Character
+		 char.HumanoidRootPart.CFrame = CFrame.new(1616.82739, 4.05089617, 4330.65283, 7.86637156e-06, -4.15036254e-08, -1, -6.3789912e-08, 1, -4.15041264e-08, 1, 6.37902389e-08, 7.86637156e-06)
+	   end    
+ })
+
+ TeleportTab:AddButton({
+	 Name = "City",
+	 Callback = function()
+		 local plr = game.Players.LocalPlayer
+		 local char = plr.Character
+		 char.HumanoidRootPart.CFrame = CFrame.new(-537.767456, 3.95088959, 386.226837, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+	   end    
+ })
+ 
+ -- Dropdowns
+ EggTab:AddDropdown({
+ Name = "Select Egg",
+ Default = "Yellow Crystal",
+ Options = {"Yellow Crystal", "Blue Crystal", "Red Crystal", "Lightning Crystal", "Inferno Crystal", "Lava Crystal", "Snow Crystal", "Electro Legends Crystal", "Space Crystal", "Alien Crystal", "Electro Crystal", "Desert Crystal"},
+ Callback = function(Value)
+	 getgenv().Egg = Value
+ end    
+ })
+end,
+})
+
+local Tab = Window:CreateTab("Bladeball", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("CUSTOM SCRIPTS")
+
+local Divider = Tab:CreateDivider()
+
+local Button = Tab:CreateButton({
+		Name = "Pitbull Hub (OP)",
+		Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/SoyAdriYT/PitbullHubX/refs/heads/main/PitbullHubX.lua", true))()
+			  end    
+	})
+local Button = Tab:CreateButton({
+		Name = "DinoHax Reborn (OP)",
+		Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/DoorsCoolScripts/blade/refs/heads/main/get"))()
+			  end,    
+	})
+
+   local Tab = Window:CreateTab("Universal", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("CUSTOM SCRIPTS")
+
+local Divider = Tab:CreateDivider()
+_G.speed = nil
+_G.jump = nil
+local Slider = Tab:CreateSlider({
+   Name = "Set JumpPower",
+   Range = {50, 1000},
+   Increment = 10,
+   Suffix = "JumpPower",
+   CurrentValue = 16,
+   Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   _G.jump = Value
+   game.Players.LocalPlayer.Character.Humanoid.JumpPower = _G.jump
+   end,
+})
+local Slider = Tab:CreateSlider({
+   Name = "Set WalkSpeed",
+   Range = {16, 500},
+   Increment = 8,
+   Suffix = "WalkSpeed",
+   CurrentValue = 16,
+   Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   _G.speed = Value
+   game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.speed
+   end,
+})
+_G.infjump = true
+function inf()
+game:GetService("UserInputService").JumpRequest:connect(function()
+	if _G.infjump == true then
+		game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")
+	end
+	end)
+end
+local Toggle = Tab:CreateToggle({
+   Name = "Infinite Jump",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   _G.infjump = Value
+   inf()
+   end,
+})
+local Button = Tab:CreateButton({
+		Name = "Owl Hub",
+		Callback = function()
+			 loadstring(game:HttpGet("https://raw.githubusercontent.com/CriShoux/OwlHub/master/OwlHub.txt"))()
+			  end,    
+	})
+   local Button = Tab:CreateButton({
+		Name = "INFINITE YEILD (1M+ GAMES)",
+		Callback = function()
+			 loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+			  end,    
+	})
+   local Button = Tab:CreateButton({
+		Name = "UNFAIR HUB (100+ GAMES)",
+		Callback = function()
+			 loadstring(game:HttpGet(('https://raw.githubusercontent.com/rblxscriptsnet/unfair/main/rblxhub.lua'),true))()
+			  end,    
+	})
+  
+   local Button = Tab:CreateButton({
+		Name = "Aimbot+Esp+Misc (SUPER OP)",
+		Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ttwizz/Open-Aimbot/master/source.lua", true))()
+			  end,    
+	})
+   local Button = Tab:CreateButton({
+		Name = "King's Universal",
+		Callback = function()
+pcall(loadstring(game:HttpGet('https://raw.githubusercontent.com/zReal-King/Kings-Hub/refs/heads/main/Main.lua')))
+			  end,    
+	})
+   local Button = Tab:CreateButton({
+		Name = "Invisble Button",
+		Callback = function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Invisible-script-20557"))()
+			  end,    
+	})
+  
+  local Button = Tab:CreateButton({
+		Name = "DinoHax RSPY",
+		Callback = function()
+
+local G2L = {};
+
+_G.Code = ""
+
+
+G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+G2L["1"]["Name"] = [[dinohax]];
+G2L["1"]["ResetOnSpawn"] = false
+G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+
+
+G2L["2"] = Instance.new("Frame", G2L["1"]);
+G2L["2"]["BorderSizePixel"] = 0;
+G2L["2"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["2"]["Size"] = UDim2.new(0, 425, 0, 253);
+G2L["2"]["Position"] = UDim2.new(0.02067, 0, 0.17804, 0);
+G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+
+
+G2L["3"] = Instance.new("Frame", G2L["2"]);
+G2L["3"]["BorderSizePixel"] = 0;
+G2L["3"]["BackgroundColor3"] = Color3.fromRGB(38, 36, 39);
+G2L["3"]["Size"] = UDim2.new(0, 425, 0, 18);
+G2L["3"]["Position"] = UDim2.new(0, 0, -0.00378, 0);
+G2L["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["3"]["Name"] = [[TopBar]];
+
+
+G2L["4"] = Instance.new("TextLabel", G2L["3"]);
+G2L["4"]["BorderSizePixel"] = 0;
+G2L["4"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["4"]["TextSize"] = 14;
+G2L["4"]["FontFace"] = Font.new([[rbxasset://fonts/families/Arial.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["4"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["4"]["BackgroundTransparency"] = 1;
+G2L["4"]["Size"] = UDim2.new(0, 58, 0, 14);
+G2L["4"]["BorderColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["4"]["Text"] = [[dinohax on top]];
+G2L["4"]["Name"] = [[Name]];
+G2L["4"]["Position"] = UDim2.new(0, 20, 0, 0);
+
+
+G2L["5"] = Instance.new("TextButton", G2L["3"]);
+G2L["5"]["BorderSizePixel"] = 0;
+G2L["5"]["TextStrokeColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["5"]["TextSize"] = 21;
+G2L["5"]["TextColor3"] = Color3.fromRGB(205, 205, 205);
+G2L["5"]["BackgroundColor3"] = Color3.fromRGB(38, 36, 39);
+G2L["5"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["5"]["RichText"] = true;
+G2L["5"]["Size"] = UDim2.new(0, 24, 0, 18);
+G2L["5"]["Name"] = [[X]];
+G2L["5"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["5"]["Text"] = [[X]];
+G2L["5"]["Position"] = UDim2.new(0.94353, 0, 0, 0);
+
+
+G2L["6"] = Instance.new("Frame", G2L["2"]);
+G2L["6"]["BorderSizePixel"] = 0;
+G2L["6"]["BackgroundColor3"] = Color3.fromRGB(75, 75, 75);
+G2L["6"]["Size"] = UDim2.new(0, 273, 0, 106);
+G2L["6"]["Position"] = UDim2.new(0.35765, 0, 0.58103, 0);
+G2L["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["6"]["Name"] = [[Buttons]];
+
+
+G2L["7"] = Instance.new("TextButton", G2L["6"]);
+G2L["7"]["TextSize"] = 14;
+G2L["7"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["7"]["BackgroundColor3"] = Color3.fromRGB(27, 27, 29);
+G2L["7"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["7"]["Size"] = UDim2.new(0, 93, 0, 17);
+G2L["7"]["Name"] = [[CopyR]];
+G2L["7"]["BorderColor3"] = Color3.fromRGB(139, 139, 139);
+G2L["7"]["Text"] = [[Copy Remote]];
+G2L["7"]["Position"] = UDim2.new(0.32967, 0, 0.08491, 0);
+
+
+G2L["8"] = Instance.new("TextLabel", G2L["7"]);
+G2L["8"]["BorderSizePixel"] = 0;
+G2L["8"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["8"]["TextSize"] = 14;
+G2L["8"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["8"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["8"]["Size"] = UDim2.new(0, 8, 0, 17);
+G2L["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["8"]["Text"] = [[]];
+G2L["8"]["Name"] = [[Border]];
+
+
+G2L["9"] = Instance.new("TextButton", G2L["6"]);
+G2L["9"]["TextSize"] = 14;
+G2L["9"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["9"]["BackgroundColor3"] = Color3.fromRGB(27, 27, 29);
+G2L["9"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["9"]["Size"] = UDim2.new(0, 83, 0, 17);
+G2L["9"]["Name"] = [[CopyC]];
+G2L["9"]["BorderColor3"] = Color3.fromRGB(139, 139, 139);
+G2L["9"]["Text"] = [[Copy Code]];
+G2L["9"]["Position"] = UDim2.new(0, 0, 0.08491, 0);
+
+G2L["9"].MouseButton1Click:Connect(function()
+
+
+	if setclipboard then
+
+		setclipboard(_G.Code)
+
+	else
+		print("Your executer doesn't support clipboard")
+	end
+end)
+
+
+G2L["a"] = Instance.new("TextLabel", G2L["9"]);
+G2L["a"]["BorderSizePixel"] = 0;
+G2L["a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["a"]["TextSize"] = 14;
+G2L["a"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["a"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["a"]["Size"] = UDim2.new(0, 8, 0, 17);
+G2L["a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["a"]["Text"] = [[]];
+G2L["a"]["Name"] = [[Border]];
+
+
+G2L["b"] = Instance.new("TextButton", G2L["6"]);
+G2L["b"]["TextSize"] = 14;
+G2L["b"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["b"]["BackgroundColor3"] = Color3.fromRGB(27, 27, 29);
+G2L["b"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["b"]["Size"] = UDim2.new(0, 81, 0, 17);
+G2L["b"]["Name"] = [[Run]];
+G2L["b"]["BorderColor3"] = Color3.fromRGB(139, 139, 139);
+G2L["b"]["Text"] = [[Run Code]];
+G2L["b"]["Position"] = UDim2.new(0.7033, 0, 0.08491, 0);
+
+
+G2L["c"] = Instance.new("TextLabel", G2L["b"]);
+G2L["c"]["BorderSizePixel"] = 0;
+G2L["c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["c"]["TextSize"] = 14;
+G2L["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["c"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["c"]["Size"] = UDim2.new(0, 8, 0, 17);
+G2L["c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["c"]["Text"] = [[]];
+G2L["c"]["Name"] = [[Border]];
+
+G2L["d2"] = Instance.new("TextButton", G2L["6"]);
+G2L["d2"]["TextSize"] = 14;
+G2L["d2"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["d2"]["BackgroundColor3"] = Color3.fromRGB(27, 27, 29);
+G2L["d2"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["d2"]["Size"] = UDim2.new(0, 83, 0, 17);
+G2L["d2"]["Name"] = [[Clear]];
+G2L["d2"]["BorderColor3"] = Color3.fromRGB(139, 139, 139);
+G2L["d2"]["Text"] = [[Clear Output]];
+G2L["d2"]["Position"] = UDim2.new(0, 0, 0.33962, 0);
+
+G2L["e2"] = Instance.new("TextLabel", G2L["d2"]);
+G2L["e2"]["BorderSizePixel"] = 0;
+G2L["e2"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["e2"]["TextSize"] = 14;
+G2L["e2"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["e2"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["e2"]["Size"] = UDim2.new(0, 8, 0, 17);
+G2L["e2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["e2"]["Text"] = [[]];
+G2L["e2"]["Name"] = [[Border]];
+
+
+G2L["d"] = Instance.new("ScrollingFrame", G2L["2"]);
+G2L["d"]["Active"] = true;
+G2L["d"]["BorderSizePixel"] = 0;
+G2L["d"]["CanvasSize"] = UDim2.new(9999, 9999, 9999, 9999);
+G2L["d"]["BackgroundColor3"] = Color3.fromRGB(54, 54, 56);
+G2L["d"]["Name"] = [[Remotes]];
+G2L["d"]["ScrollBarImageTransparency"] = 1;
+G2L["d"]["Size"] = UDim2.new(0, 152, 0, 236);
+G2L["d"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["d"]["Position"] = UDim2.new(0, 0, 0.06719, 0);
+G2L["d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["d"]["ScrollBarThickness"] = 0;
+G2L["d"]["LayoutOrder"] = 1;
+
+
+G2L["e"] = Instance.new("TextButton", G2L["d"]);
+G2L["e"]["BorderSizePixel"] = 3;
+G2L["e"]["TextSize"] = 14;
+G2L["e"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.SemiBold, Enum.FontStyle.Normal);
+G2L["e"]["Size"] = UDim2.new(0, 152, 0, 22);
+G2L["e"]["BackgroundTransparency"] = 0.8;
+G2L["e"]["Name"] = [[RemoteExample]];
+G2L["e"]["BorderColor3"] = Color3.fromRGB(93, 96, 102);
+G2L["e"]["Text"] = [[RemoteName]];
+
+
+G2L["f"] = Instance.new("TextLabel", G2L["e"]);
+G2L["f"]["BorderSizePixel"] = 0;
+G2L["f"]["BackgroundColor3"] = Color3.fromRGB(253, 242, 81);
+G2L["f"]["TextSize"] = 14;
+G2L["f"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["f"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["f"]["Size"] = UDim2.new(0, 10, 0, 22);
+G2L["f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["f"]["Text"] = [[]];
+G2L["f"]["Name"] = [[border]];
+
+
+G2L["10"] = Instance.new("UIListLayout", G2L["d"]);
+G2L["10"]["Padding"] = UDim.new(0, 7);
+G2L["10"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
+
+G2L["11"] = Instance.new("TextBox", G2L["2"]);
+G2L["11"]["CursorPosition"] = -1;
+G2L["11"]["Interactable"] = false;
+G2L["11"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["11"]["BorderSizePixel"] = 0;
+G2L["11"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+G2L["11"]["TextWrapped"] = true;
+G2L["11"]["TextSize"] = 15;
+G2L["11"]["Name"] = [[CodeSample]];
+G2L["11"]["TextYAlignment"] = Enum.TextYAlignment.Top;
+G2L["11"]["BackgroundColor3"] = Color3.fromRGB(42, 45, 54);
+G2L["11"]["FontFace"] = Font.new([[rbxasset://fonts/families/Balthazar.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["11"]["MultiLine"] = true;
+G2L["11"]["ClearTextOnFocus"] = false;
+G2L["11"]["Size"] = UDim2.new(0, 272, 0, 130);
+G2L["11"]["Position"] = UDim2.new(0.35784, 0, 0.06719, 0);
+G2L["11"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["11"]["Text"] = [[]];
+
+
+G2L["12"] = Instance.new("LocalScript", G2L["2"]);
+G2L["12"]["Name"] = [[Drag]];
+
+
+G2L["13"] = Instance.new("LocalScript", G2L["2"]);
+G2L["13"]["Name"] = [[Main]];
+
+
+local function C_12()
+	local script = G2L["12"];
+	local frame = script.Parent
+	local UserInputService = game:GetService("UserInputService")
+
+	local dragging
+	local dragInput
+	local dragStart
+	local startPos
+
+	local function update(input)
+		local delta = input.Position - dragStart
+		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+
+	frame.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = frame.Position
+
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+
+	frame.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			update(input)
+		end
+	end)
+
+end;
+task.spawn(C_12);
+
+local function C_13()
+	local script = G2L["13"];
+	local TweenService = game:GetService("TweenService")
+
+	local MainFrame = script.Parent
+	local TopBar = MainFrame.TopBar
+
+	local function Close()
+
+		MainFrame.Parent:Destroy()
+
+	end
+
+	local function SetupButtons()
+
+		TopBar.X.MouseEnter:Connect(function()
+			TweenService:Create(TopBar.X, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(170, 0, 0)}):Play()
+		end)
+
+		TopBar.X.MouseLeave:Connect(function()
+			TweenService:Create(TopBar.X, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(37, 35, 38)}):Play()
+		end)
+
+		TopBar.X.MouseButton1Click:Connect(function()
+			Close()
+		end)
+
+		MainFrame.Buttons.Clear.MouseButton1Click:Connect(function()
+
+			for _,v in pairs(MainFrame.Remotes:GetChildren()) do
+				if v:IsA("TextButton") then
+					v:Destroy()
+				end
+			end
+
+		end)
+
+	end
+
+	local function Init()
+
+		
+
+		SetupButtons()
+
+	end
+
+	Init()
+end;
+task.spawn(C_13);
+
+local function getPathToInstance(instance)
+	local path = {}
+	local current = instance
+	while current and current ~= game do
+		local name = current.Name
+		if name:sub(1, 4) == "Game" then
+			name = "game" .. name:sub(5)
+		end
+		table.insert(path, 1, name)
+		current = current.Parent
+	end
+	return table.concat(path, ".")
+end
+
+local function formatValue(value)
+	if typeof(value) == "string" then
+		return string.format("%q", value)
+	elseif typeof(value) == "number" then
+		return tostring(value)
+	elseif typeof(value) == "boolean" then
+		return value and "true" or "false"
+	elseif typeof(value) == "Instance" then
+		return getPathToInstance(value)
+	else
+		return string.format("%q", tostring(value))
+	end
+end
+
+local function Format(args)
+	local formattedArgs = {}
+	for i, arg in ipairs(args) do
+		formattedArgs[i] = string.format("[%d] = %s", i, formatValue(arg))
+	end
+	return formattedArgs
+end
+local tabelhell = nil
+tabelhell = function(newtonbar, depth)
+	local value = "{"
+	local deeper = ""
+	for i=1,depth do
+		deeper = deeper .. "	"
+	end
+	local passes = 0
+	for name, value2 in pairs(newtonbar) do
+		if type(value2) == "string" then value2 = '"' .. value2 .. '"' end
+		if type(value2) == "table" then value2 = tabelhell(value2, depth+1) end
+		local ender = ",\n"
+		passes += 1
+		if passes == #newtonbar then
+			ender = ""
+		end
+		if not tonumber(name) then
+			name = '"' .. name .. '"'
+		end
+		value = value .. deeper .. '[' .. name .. '] = ' .. tostring(value2) .. ender
+	end
+	value = value .. "\n}"
+	return value
+end
+
+local function handleRemote(remote)
+	local path = {}
+	local current = remote
+	while current and current.Parent ~= game do
+		local name = current.Name
+		if name:sub(1, 4) == "Game" then
+			name = "game" .. name:sub(5)
+		end
+		table.insert(path, 1, name)
+		current = current.Parent
+	end
+	local fullPath = table.concat(path, ".")
+
+	if remote:IsA("RemoteEvent") then
+		remote.OnClientEvent:Connect(function(...)
+			local args = {...}
+			local argsString = ""
+			local passes = 0
+			for name, value in pairs(args) do
+				local value = value
+				local newtonbar = value
+				if type(value) == "string" then value = '"' .. value .. '"' end
+				if type(newtonbar) == "table" then
+					value = tablehell(newtonbar, 2)
+				end
+				if type(value) == "userdata" then value = value:GetFullName() end
+				local ender = ","
+				passes += 1
+				if passes == #newtonbar then
+					ender = ""
+				end
+				if not tonumber(name) then
+					name = '"' .. name .. '"'
+				end
+				argsString = argsString .. '\n	[' .. name .. '] = ' .. tostring(value) .. ender
+			end
+			G2L["yu"] = G2L["e"]:Clone()
+			G2L["yu"]["Name"] = remote.Name
+			G2L["yu"]["Text"] = remote.Name
+			G2L["yu"]["Parent"] = G2L["d"]
+			G2L["yu"].MouseButton1Click:Connect(function()
+
+				_G.Code = string.format([[local args = {
+%s
+}
+%s:FireServer(unpack(args))
+]], argsString, fullPath)
+
+				G2L["11"]["Text"] = _G.Code
+			end)
+		end)
+	elseif remote:IsA("RemoteFunction") then
+		remote.OnClientInvoke = function(...)
+			local args = {...}
+			local argsString = ""
+			local passes = 0
+			for name, value in pairs(args) do
+				local value = value
+				local newtonbar = value
+				if type(value) == "string" then value = '"' .. value .. '"' end
+				if type(value) == "userdata" then value = value:GetFullName() end
+				if type(newtonbar) == "table" then
+					value = tablehell(newtonbar, 2)
+				end
+				local ender = ","
+				passes += 1
+				if passes == #newtonbar then
+					ender = ""
+				end
+				if not tonumber(name) then
+					name = '"' .. name .. '"'
+				end
+				argsString = argsString .. '\n	[' .. name .. '] = ' .. tostring(value) .. ender
+			end
+
+			G2L["yu2"] = G2L["e"]:Clone()
+			G2L["yu2"]["Name"] = remote.Name
+			G2L["yu2"]["Text"] = remote.Name
+			G2L["yu2"]["Parent"] = G2L["d"]
+			G2L["yu2"].MouseButton1Click:Connect(function()
+				_G.Code = string.format([[local args = {
+%s
+}
+%s:InvokeServer(unpack(args))
+]], argsString, fullPath)
+			end)
+
+			return ...
+		end
+	end
+end
+
+local function wrapRemotes(folder)
+	for _, obj in ipairs(folder:GetDescendants()) do
+		if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") then
+			handleRemote(obj)
+		end
+	end
+	folder.DescendantAdded:Connect(function(descendant)
+		if descendant:IsA("RemoteEvent") or descendant:IsA("RemoteFunction") then
+			handleRemote(descendant)
+		end
+	end)
+end
+
+local folders = {
+	game.ReplicatedStorage,
+	game.StarterGui,
+	game.StarterPack,
+	game.StarterPlayer
+}
+
+for _, folder in ipairs(folders) do
+	wrapRemotes(folder)
+	folder.DescendantAdded:Connect(function(descendant)
+		if descendant:IsA("RemoteEvent") or descendant:IsA("RemoteFunction") then
+			handleRemote(descendant)
+		end
+	end)
+end
+
+return G2L["1"], require;
+			  end,    
+	})
+local Label = Tab:CreateLabel("Kings Key: KINGKEYar6sD4TxdwAygGFmMeXR3HpVvJWnf7cjYL58btNuqUzCPSZBKh", 13034797311, Color3.fromRGB(255, 255, 255), true) -- Title, Icon, Color, IgnoreTheme
+
+	local Tab = Window:CreateTab("Rivals", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("CUSTOM SCRIPTS")
+
+local Divider = Tab:CreateDivider()
+
+ local Button = Tab:CreateButton({
+		Name = "Rivals (LEGIT)",
+		Callback = function()
+loadstring(game:HttpGet("https://pastebin.com/raw/mGCxuJSf",true))()
+			  end,    
+	})
+   local Button = Tab:CreateButton({
+		Name = "Zypherion Hub",
+		Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/blackowl1231/ZYPHERION/refs/heads/main/Games/ZYPHERION%20Rivals%20Beta.lua"))()
+			  end,    
+	})
+local Button = Tab:CreateButton({
+		Name = "Aimbot+Esp+Misc (SUPER OP)",
+		Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ttwizz/Open-Aimbot/master/source.lua", true))()
+			  end,    
+	})
+local Tab = Window:CreateTab("Basketball Legends", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("CUSTOM SCRIPTS")
+
+local Divider = Tab:CreateDivider()
+local Button = Tab:CreateButton({
+		Name = "Absence Hub (OP)",
+		Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/vnausea/absence-mini/refs/heads/main/absencemini.lua"))()			  end,    
+	})
+
+	local Tab = Window:CreateTab("Brookhaven", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("CUSTOM SCRIPTS")
+
+local Divider = Tab:CreateDivider()
+local Button = Tab:CreateButton({
+		Name = "SanderX Hub",
+		Callback = function()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/kigredns/SanderXV4.2.2/refs/heads/main/NormalSS.lua'))()			  end,    
+	})
+	local Tab = Window:CreateTab("Arsenal", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("CUSTOM SCRIPTS")
+
+local Divider = Tab:CreateDivider()
+
+
+local Button = Tab:CreateButton({
+		Name = "DinoHax Silent Aim",
+		Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/DoorsCoolScripts/arsenal/refs/heads/main/silentaim"))()
+			  end,    
+	})
+	local Button = Tab:CreateButton({
+		Name = "Zypherion Hub (SUPER OP)",
+		Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/blackowl1231/ZYPHERION/refs/heads/main/Games/ZYPHERION%20Rivals%20Beta.lua"))()			  end,    
+	})
+local Button = Tab:CreateButton({
+		Name = "Aimbot+Esp+Misc (SUPER OP)",
+		Callback = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ttwizz/Open-Aimbot/master/source.lua", true))()
+			  end,    
+	})
+wait(3)
+Rayfield:Notify({
+   Title = "DinoHax",
+   Content = "Thank you for using our script hub!",
+   Duration =4.5,
+   Image = 13034797311,
+})
