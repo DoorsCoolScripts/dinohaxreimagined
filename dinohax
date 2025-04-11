@@ -756,8 +756,138 @@ local Button = Tab:CreateButton({
 local Section = Tab:CreateSection("CUSTOM SCRIPTS")
 
 local Divider = Tab:CreateDivider()
+_G.fpscounter = true
+function showcounter()
+    if _G.fpscounter == true then do
+    local RunService = game:GetService("RunService")
+    local Stats = game:GetService("Stats")
+    local Players = game:GetService("Players")
+    local StarterGui = game:GetService("StarterGui")
+    
+    local screenGui = Instance.new("ScreenGui", game.CoreGui)
+    
+    local frame = Instance.new("Frame", screenGui)
+    frame.Size = UDim2.new(0.15, 0, 0.1, 0)
+    frame.Position = UDim2.new(0.85, 0, 0.0001, 0)
+    frame.BackgroundTransparency = 1  
+    local background = Instance.new("ImageLabel", frame)
+    background.Size = UDim2.new(1, 0, 1, 0)
+    background.Position = UDim2.new(0, 0, 0, 0)
+    background.Image = "" 
+    background.ScaleType = Enum.ScaleType.Stretch
+    background.BackgroundTransparency = 1
+    local fpsLabel = Instance.new("TextLabel", frame)
+    fpsLabel.Size = UDim2.new(0.5, 0, 0.3, 0)  
+    fpsLabel.Position = UDim2.new(0.5, 0, -0.5, 0)  
+    fpsLabel.TextColor3 = Color3.new(1, 1, 1)
+    fpsLabel.TextStrokeTransparency = 0
+    fpsLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
+    fpsLabel.TextScaled = false
+    fpsLabel.Font = Enum.Font.SourceSansBold
+    fpsLabel.TextSize = 18
+    fpsLabel.BackgroundTransparency = 1
+    fpsLabel.Text = "FPS: 0"
+    local msLabel = Instance.new("TextLabel", frame)
+    msLabel.Size = UDim2.new(0.5, 0, 0.3, 0)
+    msLabel.Position = UDim2.new(0.5, 0, -0.285, 0) 
+    msLabel.TextColor3 = Color3.new(1, 1, 1)
+    msLabel.TextStrokeTransparency = 0
+    msLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
+    msLabel.TextScaled = false
+    msLabel.Font = Enum.Font.SourceSansBold
+    msLabel.TextSize = 18
+    msLabel.BackgroundTransparency = 1
+    msLabel.Text = "MS: 0"
+    local creatorLabel = Instance.new("TextLabel", frame)
+    creatorLabel.Size = UDim2.new(0.5, 0, 0.3, 0)
+    creatorLabel.Position = UDim2.new(0.5, 0, -0.1, 0) 
+    creatorLabel.TextColor3 = Color3.new(1, 1, 1)
+    creatorLabel.TextStrokeTransparency = 0
+    creatorLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
+    creatorLabel.TextScaled = false
+    creatorLabel.Font = Enum.Font.SourceSansBold
+    creatorLabel.TextSize = 18
+    creatorLabel.BackgroundTransparency = 1
+    creatorLabel.Text = "dinohax on top"
+    local lastTick = tick()
+    local frameCount = 0
+    RunService.RenderStepped:Connect(function()
+        frameCount = frameCount + 1
+        if tick() - lastTick >= 1 then
+            fpsLabel.Text = "FPS: " .. frameCount
+            frameCount = 0
+            lastTick = tick()
+        end
+    end)
+    RunService.RenderStepped:Connect(function()
+        local ping = Stats.Network:FindFirstChild("ServerStatsItem") and Stats.Network.ServerStatsItem["Data Ping"]:GetValue()
+        if ping then
+            msLabel.Text = "PING: " .. math.floor(ping) .. "ms"
+        else
+            msLabel.Text = "MS: Unknown"
+        end
+    end)
+end
+else
+    game.CoreGui.ScreenGui:Destroy()
+end
+end
+
+
+local Toggle = Tab:CreateToggle({
+    Name = "FPS Counter",
+    CurrentValue = false,
+    Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+    _G.fpscounter = Value
+    showcounter()
+    end,
+ })
 _G.speed = nil
 _G.jump = nil
+_G.limiter = nil
+function fps()
+local RunService = game:GetService("RunService")
+while true do
+	local t0 = tick()
+	RunService.Heartbeat:Wait()
+	repeat until (t0 + 1/_G.limiter) < tick()
+end
+end
+local Input = Tab:CreateInput({
+   Name = "FPS Limiter",
+   CurrentValue = "",
+   PlaceholderText = "120",
+   RemoveTextAfterFocusLost = false,
+   Flag = "Input1",
+   Callback = function(Text)
+   _G.limiter = Text
+fps()
+   end,
+})
+_G.fov = nil
+function fov()
+   local runService=game:GetService("RunService")
+local camera=workspace.Camera
+
+
+runService.RenderStepped:Connect(function()
+	camera.FieldOfView = _G.fov
+
+end)
+end
+local Slider = Tab:CreateSlider({
+   Name = "FOV Changer",
+   Range = {0, 120},
+   Increment = 1,
+   Suffix = "FOV",
+   CurrentValue = 70,
+   Flag = "Slider2", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+_G.fov = Value
+fov()
+   end,
+})
 local Slider = Tab:CreateSlider({
    Name = "Set JumpPower",
    Range = {50, 1000},
@@ -770,13 +900,14 @@ local Slider = Tab:CreateSlider({
    game.Players.LocalPlayer.Character.Humanoid.JumpPower = _G.jump
    end,
 })
+
 local Slider = Tab:CreateSlider({
    Name = "Set WalkSpeed",
    Range = {16, 500},
    Increment = 8,
    Suffix = "WalkSpeed",
    CurrentValue = 16,
-   Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Flag = "Slider3", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
    Callback = function(Value)
    _G.speed = Value
    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.speed
@@ -804,6 +935,16 @@ local Button = Tab:CreateButton({
 		Callback = function()
 			 loadstring(game:HttpGet("https://raw.githubusercontent.com/CriShoux/OwlHub/master/OwlHub.txt"))()
 			  end,    
+	})
+	local Button = Tab:CreateButton({
+		Name = "!Lag Game! (CAUSES CRASH ON BAD PC)",
+		Callback = function()
+for i=1,math.huge do
+	Instance.new('Part',workspace):Destroy()
+	if i%50000==0 then
+		task.wait()
+	end
+end			  end,    
 	})
    local Button = Tab:CreateButton({
 		Name = "INFINITE YEILD (1M+ GAMES)",
